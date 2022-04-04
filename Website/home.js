@@ -1,0 +1,2 @@
+let deviceId = "";
+let accessToken = "";
