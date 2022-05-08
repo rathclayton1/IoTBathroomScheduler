@@ -28,7 +28,7 @@ const datastore = new Datastore({
 async function getAllAppointments() {
   const query = datastore
     .createQuery('appointment')
-    .order('startDateTime', {descending: true});
+    .order('startDateTime');
 
   const [entities] = await datastore.runQuery(query);
   
@@ -96,11 +96,39 @@ async function getNextAppointment() {
   return appointment;
 }
 
-async function addAppointment(dateTime, numMinutes, personName) {
+// Returns true or false to indicate whether there is an existing
+// appointment that conflicts with the given appointment criteria
+async function isThereAConflictingAppointment(newStartDateTime, newNumMinutes) {
+  const allAppointments = await getAllAppointments();
+  
+  const msPerMin = 60000;
+  // Get end time by adding the number of minutes converted to milliseconds
+  const newEndDateTime = new Date(startDateTime.getTime() + numMinutes * msPerMin);
+
+  // Check if there is an existing appointment for which one of the following is true,
+  // and if so, returns true indicating there is a conflicting appointment, else return false:
+  // newStart is between existingStart and existingEnd
+  // newEnd is between existingStart and existingEnd
+  // (newStart is before existingStart) AND (newEnd is after existingEnd)
+
+  return allAppointments.some(
+    entity => {
+      const existingStartDateTime = entity.startDateTime;
+      // Get end time by adding the number of minutes converted to milliseconds
+      const existingEndDateTime = new Date(startDateTime.getTime() + entity.numMinutes * msPerMin);
+      // Compare using epoch time
+      return (existingStartDateTime.getTime() <= newStartDateTime.getTime() && newStartDateTime.getTime() < existingEndDateTime.getTime()) ||
+             (existingStartDateTime.getTime() < newEndDateTime.getTime() && newEndDateTime.getTime() <= existingEndDateTime.getTime()) ||
+             (newStartDateTime.getTime() <= existingStartDateTime.getTime() && existingEndDateTime.getTime() <= existingEndDateTime.getTime());
+    }
+  );
+}
+
+async function addAppointment(startDateTime, numMinutes, personName) {
   const entity = {
     key: datastore.key('appointment'),
     data: {
-      dateTime: new Date(dateTime),
+      startDateTime: new Date(startDateTime),
       numMinutes: numMinutes,
       personName: personName,
     },
@@ -173,12 +201,17 @@ app.get('/appointments/next', async (req, res) => {
 
 // Takes in a JSON object of an appointment and schedules it
 // unless there is a conflicting appointment, in which case
-// an error is returned
+// an error code is returned
 app.post('/appointments', async (req, res) => {
   try {
     const data = JSON.parse(req.body.data);
-    await addAppointment(data.time, data.numMinutes, data.personName);
-    res.end();
+
+    if (await isThereAConflictingAppointment(data.startDateTime, data.numMinutes)) {
+      res.status(400).end();
+    } else {
+      await addAppointment(data.startDateTime, data.numMinutes, data.personName);
+      res.status(200).end();
+    }
 
   } catch(err) {
     console.error(`Error: ${err}`);
