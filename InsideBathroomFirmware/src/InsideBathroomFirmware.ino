@@ -6,15 +6,17 @@
  */
 #include "HC_SR04.h"
 #include "DHT22Gen3_RK.h"
-//haha
+
 double voltage;
 double brightness;
 double humidity;
 double tempC;
+
 bool overTime = false;
 bool checkLight = false;
 bool doorIsClosed = false;
 bool bathroomInUse = false;
+
 const int trigPin = D4;
 const int echoPin = D5;
 const int photoResistor = A1;
@@ -59,17 +61,18 @@ void loop() {
 void checkLightOn() { 
   voltage = analogRead(photoResistor) / 4095.0 * 3.3;
   brightness = ((3.3 / voltage) - 1) * 8; //use the equation to get illuminance
-  if(voltage > 2.840 || brightness < 3.0) { //change from # to appropriate number. Using voltage for now, change to brightness maybe (works).
+  if(voltage > 1.3 || brightness < 9.9) { //change from # to appropriate number. Using voltage for now, change to brightness maybe (works).
     Serial.printlnf("Brightness: %f", brightness);
+    Serial.printlnf("Voltage: %f", voltage);
     checkLight = true;
-    Serial.println("Bathroom light is on (unless it isn't)");
-    analogWrite(buzzer, freq, hz); //used to test photo-resistor 
-    delay(delayTime / 2);
+    Serial.println("Bathroom light is on");
+    //analogWrite(buzzer, freq, hz); //used to test photo-resistor 
+    //delay(delayTime / 2);
     voltage = 0.0; //reset voltage 
   } else {
-    analogWrite(buzzer, freq * 0, hz); //used to test photo-resistor 
+    //analogWrite(buzzer, freq * 0, hz); //used to test photo-resistor 
     checkLight = false;
-    Serial.println("light is off (maybe)");
+    Serial.println("light is off");
     voltage = 0.0;
   
   }

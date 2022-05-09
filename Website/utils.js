@@ -9,8 +9,8 @@ function sendGetWebRequest(url, args, callback) {
 function sendPostWebRequest(url, body, callback) {
     let xhttp = new XMLHttpRequest();
     xhttp.open("POST", url, true);
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
-    xhttp.send(body);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.send(JSON.stringify(body));
     xhttp.onreadystatechange = callback;
 }
 
@@ -19,3 +19,5 @@ function setImmediateInterval(callback, milliseconds) {
     callback();
     setInterval(callback, milliseconds);
 }
+
+console.log(Date());

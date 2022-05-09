@@ -24,7 +24,6 @@ function updateInUseStatus() {
 
 function updateTemperature() {
     sendGetWebRequest(particleBaseUrl + "/temperatureC", "access_token=" + environment.insideBathroomArgonAccessToken, function () {
-        console.log(this.responseText);
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
             if (resp.result != null) {
@@ -53,14 +52,14 @@ function updateCurrentBathroomAppointment() {
         if (this.readyState == 4 && this.status == 200) {
             const displayCurrentAppointmentParagraph = document.getElementById("display-current-appointment");
             
-            if (this.responseText == "{}") { // this is what is returned when no such appointment exists
+            if (this.responseText == "") { // this is what is returned when no such appointment exists
                 displayCurrentAppointmentParagraph.innerHTML = "No one is scheduled to use the bathroom right now."
             } else {
                 const resp = JSON.parse(this.responseText);
 
                 displayCurrentAppointmentParagraph.innerHTML = 
                     resp.personName + " is scheduled to use the bathroom starting at " +
-                    resp.starDateTime + " for " + resp.numMinutes + " minutes.";
+                    resp.startDateTime + " for " + resp.numMinutes + " minutes.";
             }
         }
     });
@@ -71,14 +70,14 @@ function updateNextBathroomAppointment() {
         if (this.readyState == 4 && this.status == 200) {
             const displayNextAppointmentParagraph = document.getElementById("display-next-appointment");
 
-            if (this.responseText == "{}") { // this is what is returned when no such appointment exists
+            if (this.responseText == "") { // this is what is returned when no such appointment exists
                 displayNextAppointmentParagraph.innerHTML = "There are no upcoming appointments."
             } else {
                 const resp = JSON.parse(this.responseText);
 
                 displayNextAppointmentParagraph.innerHTML = 
                     resp.personName + " is scheduled to use the bathroom starting at " +
-                    resp.starDateTime + " for " + resp.numMinutes + " minutes.";
+                    resp.startDateTime + " for " + resp.numMinutes + " minutes.";
             }
         }
     });

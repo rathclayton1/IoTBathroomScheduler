@@ -1,18 +1,67 @@
 
 function scheduleNewAppointment() {
-    const body = {};
+    const personName = document.getElementById("appointmentPersonName").value;
+    const appointmentStartDateTime = document.getElementById("appointmentStartDateTime").value;
+    const appointmentNumMinutes = document.getElementById("appointmentNumMinutes").value;
 
-    sendPostWebRequest(environment.webServerUrl + "/appointments", body, null);
+    const resultParagraph = document.getElementById("new-appointment-result");
 
-    updateScheduleDisplay();
+    if (personName == "") {
+        resultParagraph.innerHTML = "Please enter a name.";
+    } else if (appointmentStartDateTime == "") {
+        resultParagraph.innerHTML = "Please enter a start date and time.";
+    } else if (appointmentNumMinutes == "" || appointmentNumMinutes < 1) {
+        resultParagraph.innerHTML = "Please enter a positive number of minutes.";
+    } else {
+        const body = {
+            personName: personName,
+            startDateTime: new Date(appointmentStartDateTime),
+            numMinutes: appointmentNumMinutes,
+        };
+
+        sendPostWebRequest(environment.webServerUrl + "/appointments", body, function () {
+            if (this.readyState == 4 && this.status == 400) {
+                resultParagraph.innerHTML = "That appointment would conflict with an existing appointment.";
+            }
+            if (this.readyState == 4 && this.status == 200) {
+                resultParagraph.innerHTML = "Success!"
+            }
+        });
+
+        updateScheduleDisplay();
+    }
 }
 
 function updateScheduleDisplay() {
     const date = document.getElementById("dateForDisplay").value;
+
+    if (date == "") {
+        return;
+    }
     
     sendGetWebRequest(environment.webServerUrl + "/appointments/by-date", "date=" + date, function () {
         if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("temp").innerHTML = this.responseText;
+            const resp = JSON.parse(this.responseText);
+            const scheduleList = document.getElementById("current-schedule-list");
+            const scheduleResultParagraph = document.getElementById("current-schedule-result");
+
+            // Clear previous list items
+            scheduleList.innerHTML = "";
+
+            if (resp.length == 0) {
+                scheduleResultParagraph.innerHTML = "There are no appointments on this date.";
+            } else {
+                scheduleResultParagraph. innerHTML = "";
+                // Add a list item for each appointment
+                for (let i = 0; i < resp.length; i++) {
+                    const appointmentListItem = document.createElement("li");
+                    appointmentListItem.innerHTML = 
+                        resp[i].personName + " is scheduled to use the bathroom starting at " +
+                        resp[i].startDateTime + " for " + resp[i].numMinutes + " minutes.";
+                    scheduleList.appendChild(appointmentListItem);
+                }
+            }
+            
         }
     });
 }
