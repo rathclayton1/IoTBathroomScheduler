@@ -1,3 +1,11 @@
+/*
+ * Project: IotBathroomScheduler- OutsideBathroom Firmware
+ * Description: Firmware for argon outside bathroom to display if bathroom is occupied, 
+ * as well as sound buzzer when appointment expires.
+ * Author: Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang
+ * Date: End of semester
+ */
+
 #include "DHT22Gen3_RK.h"
 #include <math.h>
 #include <SPI.h>
