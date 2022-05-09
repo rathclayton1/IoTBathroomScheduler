@@ -1,3 +1,5 @@
+// This script file should be added to the .html file before adding
+// other .js files that will need to reference these utility functions
 
 function sendGetWebRequest(url, args, callback) {
     let xhttp = new XMLHttpRequest();
@@ -19,5 +21,3 @@ function setImmediateInterval(callback, milliseconds) {
     callback();
     setInterval(callback, milliseconds);
 }
-
-console.log(Date());

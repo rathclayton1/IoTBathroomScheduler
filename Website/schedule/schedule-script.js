@@ -55,9 +55,11 @@ function updateScheduleDisplay() {
                 // Add a list item for each appointment
                 for (let i = 0; i < resp.length; i++) {
                     const appointmentListItem = document.createElement("li");
+                    const startDateTime = new Date(resp[i].startDateTime);
                     appointmentListItem.innerHTML = 
                         resp[i].personName + " is scheduled to use the bathroom starting at " +
-                        resp[i].startDateTime + " for " + resp[i].numMinutes + " minutes.";
+                        startDateTime.toLocaleTimeString() +" for " +
+                        resp[i].numMinutes + " minute(s).";
                     scheduleList.appendChild(appointmentListItem);
                 }
             }
