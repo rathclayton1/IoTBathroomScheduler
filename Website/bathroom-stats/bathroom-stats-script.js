@@ -2,7 +2,7 @@
 const particleBaseUrl = "https://api.particle.io/v1/devices/" + environment.insideBathroomArgonDeviceId;
 
 function updateInUseStatus() {
-    sendGetWebRequest(particleBaseUrl + "/isInUse", "access_token=" + environment.insideBathroomArgonAccessToken, () => {
+    sendGetWebRequest(particleBaseUrl + "/bathroomInUse", "access_token=" + environment.insideBathroomArgonAccessToken, () => {
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
 
@@ -22,7 +22,7 @@ function updateInUseStatus() {
 }
 
 function updateTemperature() {
-    sendGetWebRequest(particleBaseUrl + "/temperature", "access_token=" + environment.insideBathroomArgonAccessToken, () => {
+    sendGetWebRequest(particleBaseUrl + "/temperatureC", "access_token=" + environment.insideBathroomArgonAccessToken, () => {
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
 
