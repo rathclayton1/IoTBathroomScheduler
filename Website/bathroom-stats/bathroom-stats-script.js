@@ -1,18 +1,19 @@
 
 const particleBaseUrl = "https://api.particle.io/v1/devices/" + environment.insideBathroomArgonDeviceId;
+const displayDecimalPlaces = 2;
 
 function updateInUseStatus() {
-    sendGetWebRequest(particleBaseUrl + "/bathroomInUse", "access_token=" + environment.insideBathroomArgonAccessToken, () => {
+    sendGetWebRequest(particleBaseUrl + "/bathroomInUse", "access_token=" + environment.insideBathroomArgonAccessToken, function () {
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
 
             const displayInUseParagraph = document.getElementById("display-in-use");
 
-            if (resp.return_value == true) {
+            if (resp.result == true) {
                 displayInUseParagraph.innerHTML = "In use";
                 displayInUseParagraph.classList.add("in-use");
                 displayInUseParagraph.classList.remove("not-in-use");
-            } else if (resp.return_value == false) {
+            } else if (resp.result == false) {
                 displayInUseParagraph.innerHTML = "Not in use";
                 displayInUseParagraph.classList.remove("in-use");
                 displayInUseParagraph.classList.add("not-in-use");
@@ -22,31 +23,33 @@ function updateInUseStatus() {
 }
 
 function updateTemperature() {
-    sendGetWebRequest(particleBaseUrl + "/temperatureC", "access_token=" + environment.insideBathroomArgonAccessToken, () => {
+    sendGetWebRequest(particleBaseUrl + "/temperatureC", "access_token=" + environment.insideBathroomArgonAccessToken, function () {
+        console.log(this.responseText);
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
-
-            if (resp.return_value != -1) {
-                document.getElementById("display-temperature").innerHTML = resp.return_value;
+            if (resp.result != null) {
+                const toDisplay = resp.result.toFixed(displayDecimalPlaces);
+                document.getElementById("display-temperature").innerHTML = toDisplay + "&deg; C";
             }
+            
         }
     });
 }
 
 function updateHumidity() {
-    sendGetWebRequest(particleBaseUrl + "/humidity", "access_token=" + environment.insideBathroomArgonAccessToken, () => {
+    sendGetWebRequest(particleBaseUrl + "/humidity", "access_token=" + environment.insideBathroomArgonAccessToken, function () {
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
-
-            if (resp.return_value != -1) {
-                document.getElementById("display-humidity").innerHTML = resp.return_value;
+            if (resp.result != null) {
+                const toDisplay = resp.result.toFixed(displayDecimalPlaces);
+                document.getElementById("display-humidity").innerHTML = toDisplay + "%";
             }
         }
     });
 }
 
 function updateCurrentBathroomAppointment() {
-    sendGetWebRequest(environment.webServerUrl + "/appointments/current", "", () => {
+    sendGetWebRequest(environment.webServerUrl + "/appointments/current", "", function () {
         if (this.readyState == 4 && this.status == 200) {
             const displayCurrentAppointmentParagraph = document.getElementById("display-current-appointment");
             
@@ -64,7 +67,7 @@ function updateCurrentBathroomAppointment() {
 }
 
 function updateNextBathroomAppointment() {
-    sendGetWebRequest(environment.webServerUrl + "/appointments/next", "", () => {
+    sendGetWebRequest(environment.webServerUrl + "/appointments/next", "", function () {
         if (this.readyState == 4 && this.status == 200) {
             const displayNextAppointmentParagraph = document.getElementById("display-next-appointment");
 
