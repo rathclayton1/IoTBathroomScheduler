@@ -1,11 +1,12 @@
 /*
  * Project: IotBathroomScheduler- OutsideBathroom Firmware
- * Description: Bathroom schedule for firmware one.
+ * Description: Firmware for argon outside bathroom to display if bathroom is occupied, 
+ *   as well as show on screen who should be in bathroom.
  * Author: Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang
- * Bugs:
- * Reflection: 
+ * Date: 5/9/22
+ * Reflection: It was difficult to figure out how to get the right data
+ *   and parse it properly.
  */
-
 
 #include "DHT22Gen3_RK.h"
 #include <math.h>
@@ -24,6 +25,11 @@ int blue = D3;
 int red = D4;
 int iterate = 0;
 
+unsigned long appointmentTime = 0;
+unsigned long notificationTime = 0;
+int duration;
+boolean isOccupied = false;
+String nextName;
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
@@ -32,10 +38,50 @@ int iterate = 0;
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-void sampleCallback(DHTSample sample);
-String tester [] = {"Bob", "Joe", "Clarence", "John"};
-void setup() {
+
+void nameHandler(const char *event, const char *data){
+    nextName = data;
+    updateScreen(nextName);
+    nextName += "is up soon!";
     
+    if (appointmentTime > notificationTime){
+        Particle.publish("Discord", nextName, PUBLIC);
+    }
+}
+
+/**
+ * This should handle the lights
+ */
+void statusHandler(const char *event, const char *data){
+    if (data[0] == 't'){
+        isOccupied = false;
+    }
+    else{
+        isOccupied = true;
+    }
+}
+
+void timeHandler(const char *event, const char *data){
+    String stringData = (String)data;
+    appointmentTime = stringData.toInt();
+    notificationTime = appointmentTime + duration - 5000; //5000 for 5 minute warning.
+    
+    
+}
+
+void durationHandler(const char *event, const char *data){
+    String stringData = (String)data;
+    duration = stringData.toInt();
+
+    
+}
+
+
+void setup() {
+    Particle.subscribe("hook-response/BathroomStatus", statusHandler, MY_DEVICES);
+    Particle.subscribe("hook-response/getTime", timeHandler, MY_DEVICES);
+    Particle.subscribe("hook-response/getDuration", durationHandler, MY_DEVICES);
+    Particle.subscribe("hook-response/getName", nameHandler, MY_DEVICES);
     pinMode(red, OUTPUT);
     pinMode(blue, OUTPUT);
     Serial.begin(9600);
@@ -57,23 +103,26 @@ void setup() {
 }
 
 void loop() {
-String name = getName(iterate++);
-name += " is currently up";
-delay(5000);
-updateScreen(name);
-digitalWrite(blue,LOW);
-digitalWrite(red, HIGH);
-delay(5000);
-digitalWrite(blue,HIGH);
-digitalWrite(red, LOW);
-updateScreen(name);
-Particle.publish("Discord", name, PUBLIC);
+String data = String(10);
+delay(10000);
 
-}
+Particle.publish("getDuration", data, PRIVATE);
+
+Particle.publish("getTime", data, PUBLIC);
 
 
-String getName(int arraySpot){
-    return tester[arraySpot % 4];
+    Particle.publish("BathroomStatus", data, PUBLIC);
+
+    Particle.publish("getName", data, PUBLIC);
+   
+    if (isOccupied){
+        digitalWrite(blue, HIGH);
+        digitalWrite(red,LOW);
+    }
+    else{
+        digitalWrite(blue, LOW);
+        digitalWrite(red, LOW);
+    }
 }
 
 void updateScreen(String name){
@@ -82,6 +131,6 @@ void updateScreen(String name){
     display.setCursor(1, 2);
     display.setTextColor(WHITE);
     display.print(name);
-    display.print(F(" is up in 5 minutes!"));
+    display.print(F(" is up next"));
     display.display();
 }

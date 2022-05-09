@@ -1,9 +1,10 @@
 /*
  * Project: IotBathroomScheduler- InsideBathroom Firmware
  * Description: Firmware for argon inside bathroom to monitor if bathroom is occupied, 
- * as well as sound buzzer when appointment expires.
+ *   as well as sound buzzer when appointment expires.
  * Author: Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang
- * Date: End of semester
+ * Date: 5/9/22
+ * Reflection: It was difficult to get the buzzer and the sensors to work properly.
  */
 
 #include "HC_SR04.h"
