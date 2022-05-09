@@ -1,3 +1,12 @@
+/*
+ * Project: IotBathroomScheduler- OutsideBathroom Firmware
+ * Description: Bathroom schedule for firmware one.
+ * Author: Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang
+ * Bugs:
+ * Reflection: 
+ */
+
+
 #include "DHT22Gen3_RK.h"
 #include <math.h>
 #include <SPI.h>
@@ -26,7 +35,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 void sampleCallback(DHTSample sample);
 String tester [] = {"Bob", "Joe", "Clarence", "John"};
 void setup() {
-
+    
     pinMode(red, OUTPUT);
     pinMode(blue, OUTPUT);
     Serial.begin(9600);

@@ -3,8 +3,10 @@ Name: IoTBathroomScheduler - WebServer
 Author: Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang
 Description: Keeps track of bathroom appointments and allows
   this information to be queried in various ways.
-Bugs: 
-Reflection: 
+Bugs: None that we know of
+Reflection: It was a challenge to get all of the dates and times
+  to work properly and to figure out how to properly send and retrieve
+  data in the right formats. We think it works relatively well.
 ****/
 
 ////// Setup //////
@@ -169,7 +171,7 @@ app.get('/appointments', async (req, res) => {
   }
 });
 
-// Takes in a JSON object that contains date,
+// Takes in date as a query param,
 // representing the desired date as an ISO 8601 string
 // Returns a JSON array of all appointments on a given date
 app.get('/appointments/by-date', async (req, res) => {
