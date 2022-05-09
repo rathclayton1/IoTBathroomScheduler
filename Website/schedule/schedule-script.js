@@ -44,11 +44,15 @@ function updateScheduleDisplay() {
             const resp = JSON.parse(this.responseText);
             const scheduleList = document.getElementById("current-schedule-list");
 
-            for (appointment in resp) {
+            // Clear previous list items
+            scheduleList.innerHTML = "";
+
+            // Add a list item for each appointment
+            for (let i = 0; i < resp.length; i++) {
                 const appointmentListItem = document.createElement("li");
                 appointmentListItem.innerHTML = 
-                    appointment.personName + " is scheduled to use the bathroom starting at " +
-                    appointment.startDateTime + " for " + appointment.numMinutes + " minutes.";
+                    resp[i].personName + " is scheduled to use the bathroom starting at " +
+                    resp[i].startDateTime + " for " + resp[i].numMinutes + " minutes.";
                 scheduleList.appendChild(appointmentListItem);
             }
         }

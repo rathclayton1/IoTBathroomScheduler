@@ -78,6 +78,8 @@ async function getCurrentAppointment() {
     return null;
   }
 
+  appointment.epochTime = appointment.startDateTime.getTime();
+
   return appointment;
 }
 
@@ -98,6 +100,8 @@ async function getNextAppointment() {
   if (appointment === undefined) {
     return null;
   }
+
+  appointment.epochTime = appointment.startDateTime.getTime();
 
   return appointment;
 }
@@ -149,7 +153,9 @@ async function addAppointment(startDateTime, numMinutes, personName) {
 // startDateTime as an ISO 8601 string,
 // numMinutes as an integer, representing the length, and
 // personName as a string, representing the person who has the appointment
-// An appointment may not cross from one day to another
+
+// For the next and current endpoints, an appointment also includes
+// epochTime, representing the startDateTime as ms since Jan 1, 1970
 
 // Returns a JSON array of all appointments
 app.get('/appointments', async (req, res) => {
