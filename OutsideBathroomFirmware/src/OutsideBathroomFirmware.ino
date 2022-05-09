@@ -15,10 +15,10 @@ int blue = D3;
 int red = D4;
 int iterate = 0;
 
-unsigned long appointmentTime = 0;
-unsigned long notificationTime = 0;
+unsigned long appointmentTime;
+unsigned long notificationTime;
 int duration;
-boolean isOccupied = false;
+boolean isOccupied;
 String nextName;
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -74,6 +74,11 @@ void setup() {
     Particle.subscribe("hook-response/getName", nameHandler, MY_DEVICES);
     pinMode(red, OUTPUT);
     pinMode(blue, OUTPUT);
+
+    isOccupied = false;
+    appointmentTime = 0;
+    notificationTime = 0;
+    
     Serial.begin(9600);
 
     // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
@@ -106,11 +111,11 @@ Particle.publish("getTime", data, PUBLIC);
     Particle.publish("getName", data, PUBLIC);
    
     if (isOccupied){
-        digitalWrite(blue, HIGH);
-        digitalWrite(red,LOW);
+        digitalWrite(blue, LOW);
+        digitalWrite(red,HIGH);
     }
     else{
-        digitalWrite(blue, LOW);
+        digitalWrite(blue, HIGH);
         digitalWrite(red, LOW);
     }
 }
