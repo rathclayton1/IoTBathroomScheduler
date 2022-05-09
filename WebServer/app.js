@@ -171,7 +171,7 @@ app.get('/appointments', async (req, res) => {
   }
 });
 
-// Takes in a JSON object that contains date,
+// Takes in date as a query param,
 // representing the desired date as an ISO 8601 string
 // Returns a JSON array of all appointments on a given date
 app.get('/appointments/by-date', async (req, res) => {

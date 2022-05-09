@@ -59,7 +59,7 @@ function updateCurrentBathroomAppointment() {
 
                 displayCurrentAppointmentParagraph.innerHTML = 
                     resp.personName + " is scheduled to use the bathroom starting at " +
-                    resp.startDateTime + " for " + resp.numMinutes + " minutes.";
+                    resp.startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
             }
         }
     });
@@ -77,7 +77,7 @@ function updateNextBathroomAppointment() {
 
                 displayNextAppointmentParagraph.innerHTML = 
                     resp.personName + " is scheduled to use the bathroom starting at " +
-                    resp.startDateTime + " for " + resp.numMinutes + " minutes.";
+                    resp.startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
             }
         }
     });
