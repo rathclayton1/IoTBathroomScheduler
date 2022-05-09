@@ -90,8 +90,9 @@ void loop() {
 void checkLightOn() { 
   voltage = analogRead(photoResistor) / 4095.0 * 3.3;
   brightness = ((3.3 / voltage) - 1) * 8; //use the equation to get illuminance
-  if(voltage > 2.840 || brightness < 3.0) { //change from # to appropriate number. Using voltage for now, change to brightness maybe (works).
+  if(voltage > 1.3 || brightness < 9.9) { //change from # to appropriate number. Using voltage for now, change to brightness maybe (works).
     Serial.printlnf("Brightness: %f", brightness);
+    Serial.printlnf("Voltage: %f", voltage);
     lightIsOn = true;
     delay(delayTime / 2);
     voltage = 0.0; //reset voltage 
