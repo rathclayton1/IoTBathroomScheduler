@@ -65,14 +65,14 @@ void checkLightOn() {
     Serial.printlnf("Brightness: %f", brightness);
     Serial.printlnf("Voltage: %f", voltage);
     checkLight = true;
-    Serial.println("Bathroom light is on (unless it isn't)");
-    analogWrite(buzzer, freq, hz); //used to test photo-resistor 
-    delay(delayTime / 2);
+    Serial.println("Bathroom light is on");
+    //analogWrite(buzzer, freq, hz); //used to test photo-resistor 
+    //delay(delayTime / 2);
     voltage = 0.0; //reset voltage 
   } else {
-    analogWrite(buzzer, freq * 0, hz); //used to test photo-resistor 
+    //analogWrite(buzzer, freq * 0, hz); //used to test photo-resistor 
     checkLight = false;
-    Serial.println("light is off (maybe)");
+    Serial.println("light is off");
     voltage = 0.0;
   
   }
