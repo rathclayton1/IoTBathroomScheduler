@@ -1,0 +1,9 @@
+
+#new-appointment-list {
+    padding-left: 0;
+    list-style-type: none;
+}
+
+#new-appointment-list li {
+    margin: 5px;
+}

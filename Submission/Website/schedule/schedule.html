@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <title>IoT Bathroom Scheduler</title>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+
+    <meta name="author" content="Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang">
+    <meta name="description" content="A website for scheduling bathroom time using IoT">
+    <meta name="keywords" content="bathroom, schedule, internet of things, iot">
+
+    <link rel="stylesheet" href="../universal-style.css">
+    <link rel="stylesheet" href="schedule-style.css">
+    <script src="../environment.js"></script>
+    <script src="../utils.js"></script>
+    <script src="schedule-script.js" defer></script>
+</head>
+
+<body>
+    <div id="wrapper">
+        <header>
+            <h1><a href="../home.html">IoT Bathroom Scheduler</a></h1>
+            <nav>
+                <ul id="nav-list">
+                    <li class="nav-item"><a href="../bathroom-stats/bathroom-stats.html">Bathroom Stats</a></li>
+                    <li class="nav-item"><a href="schedule.html">Schedule</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <h2>Schedule</h2>
+
+            <section>
+                <h3>Schedule New Appointment</h3>
+
+                <p id="new-appointment-result">Please enter the necessary information.</p>
+                
+                <ul id="new-appointment-list">
+                    <li>
+                        <label for="appointmentPersonName">Name:</label>
+                        <input type="text" name="appointmentPersonName" id="appointmentPersonName">
+                    </li>
+                    <li>
+                        <label for="appointmentStartDateTime">Appointment date and time:</label>
+                        <input type="datetime-local" name="appointmentStartDateTime" id="appointmentStartDateTime">
+                    </li>
+                    <li>
+                        <label for="appointmentNumMinutes">Length in minutes:</label>
+                        <input type="number" name="appointmentNumMinutes" id="appointmentNumMinutes" min="1">
+                    </li>
+                </ul>
+        
+                <button onclick="scheduleNewAppointment()">Schedule</button>
+            </section>
+
+            <section>
+                <h3>Select Date for Schedule View</h3>
+
+                <p>
+                    <label for="dateForDisplay">New date:</label>
+                    <input type="date" name="dateForDisplay" id="dateForDisplay">
+                </p>
+        
+                <button onclick="updateScheduleDisplay()">Update</button>
+            </section>
+
+            <section>
+                <h3>Current Schedule</h3>
+                <p class="fine-print">Schedule updated every one minute</p>
+                
+                <ul id="current-schedule-list"></ul>
+
+                <p id="current-schedule-result">Please wait...</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2022 Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang</p>
+        </footer>
+    </div>
+</body>
+
+</html>

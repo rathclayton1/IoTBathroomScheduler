@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <title>IoT Bathroom Scheduler</title>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+
+    <meta name="author" content="Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang">
+    <meta name="description" content="A website for scheduling bathroom time using IoT">
+    <meta name="keywords" content="bathroom, schedule, internet of things, iot">
+
+    <link rel="stylesheet" href="../universal-style.css">
+    <link rel="stylesheet" href="bathroom-stats-style.css">
+    <script src="../environment.js"></script>
+    <script src="../utils.js"></script>
+    <script src="bathroom-stats-script.js" defer></script>
+</head>
+
+<body>
+    <div id="wrapper">
+        <header>
+            <h1><a href="../home.html">IoT Bathroom Scheduler</a></h1>
+            <nav>
+                <ul id="nav-list">
+                    <li class="nav-item"><a href="bathroom-stats.html">Bathroom Stats</a></li>
+                    <li class="nav-item"><a href="../schedule/schedule.html">Schedule</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <h2>Bathroom Stats</h2>
+            
+            <p>You can view some stats and information about your bathroom below.</p>
+            <p class="fine-print">Statistics updated every one minute</p>
+
+            <h3>In Use Status</h3>
+            <p id="display-in-use">Please wait...</p>
+
+            <h3>Temperature</h3>
+            <p id="display-temperature-c">Please wait...</p>
+            <p id="display-temperature-f">Please wait...</p>
+
+            <h3>Humidity</h3>
+            <p id="display-humidity">Please wait...</p>
+
+            <h3>Current Bathroom Appointment</h3>
+            <p id="display-current-appointment">Please wait...</p>
+
+            <h3>Next Upcoming Bathroom Appointment</h3>
+            <p id="display-next-appointment">Please wait...</p>
+        </main>
+
+        <footer>
+            <p>&copy; 2022 Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang</p>
+        </footer>
+    </div>
+</body>
+
+</html>
