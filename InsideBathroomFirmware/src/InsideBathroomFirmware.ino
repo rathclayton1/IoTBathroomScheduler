@@ -16,8 +16,8 @@ double tempC;
 
 int webhookCounter;
 int countReset = 4500; //counter to regulate webhook triggers
-int appointmentStartTime = defaultStartTime;
-int appointmentLength = defaultMinutes;
+int appointmentStartTime = 1800000000;
+int appointmentLength = 0;
 
 bool lightIsOn = false;
 bool doorIsClosed = false;
