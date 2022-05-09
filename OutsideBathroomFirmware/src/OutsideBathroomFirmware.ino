@@ -1,3 +1,13 @@
+/*
+ * Project: IotBathroomScheduler- OutsideBathroom Firmware
+ * Description: Firmware for argon outside bathroom to display if bathroom is occupied, 
+ *   as well as show on screen who should be in bathroom.
+ * Author: Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang
+ * Date: 5/9/22
+ * Reflection: It was difficult to figure out how to get the right data
+ *   and parse it properly.
+ */
+
 #include "DHT22Gen3_RK.h"
 #include <math.h>
 #include <SPI.h>

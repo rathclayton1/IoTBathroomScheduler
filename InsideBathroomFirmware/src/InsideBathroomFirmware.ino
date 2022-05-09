@@ -1,9 +1,10 @@
 /*
  * Project: IotBathroomScheduler- InsideBathroom Firmware
  * Description: Firmware for argon inside bathroom to monitor if bathroom is occupied, 
- * as well as sound buzzer when appointment expires.
+ *   as well as sound buzzer when appointment expires.
  * Author: Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang
- * Date: End of semester
+ * Date: 5/9/22
+ * Reflection: It was difficult to get the buzzer and the sensors to work properly.
  */
 
 #include "HC_SR04.h"
@@ -30,14 +31,14 @@ const int photoResistor = A1;
 const pin_t DHT_DATA_PIN = A3;
 const int buzzer = A5;
 
-const int delayTime = 8000;
+const int delayTime = 800;
 const int delayPause = 300;
 const int freq = 128;
 const int hz = 440;
 const int defaultStartTime = 1800000000;
 const int defaultMinutes = 0;
 const int baseDistance = 0;
-const double maxDoorDistance = 38.5; //Farthest distance the door can open in relation to distance sensor
+const double maxDoorDistance = 13.0; //Farthest distance the door can open in relation to distance sensor
 const double highHumidity = 91.5;
 
 HC_SR04 rangefinder = HC_SR04(trigPin, echoPin, 1.0, 500.0);
@@ -91,21 +92,25 @@ void checkLightOn() {
   voltage = analogRead(photoResistor) / 4095.0 * 3.3;
   brightness = ((3.3 / voltage) - 1) * 8; //use the equation to get illuminance
   if(voltage > 1.3 || brightness < 9.9) { //change from # to appropriate number. Using voltage for now, change to brightness maybe (works).
-    Serial.printlnf("Brightness: %f", brightness);
-    Serial.printlnf("Voltage: %f", voltage);
+    //Serial.printlnf("Brightness: %f", brightness);
+    //Serial.printlnf("Voltage: %f", voltage);
     lightIsOn = true;
-    delay(delayTime / 2);
+    //delay(delayTime / 2);
     voltage = 0.0; //reset voltage 
   } else { 
     lightIsOn = false;
     voltage = 0.0;
-  
   }
 }
 
 //If HC_SR04 detects the door within maxDoorDistance, it considers it open, otherwise considers it not open
 void checkDoorClosed(double curDistance) {
-  (curDistance >= maxDoorDistance || curDistance <= baseDistance) ? doorIsClosed = false : doorIsClosed = true;
+  if(curDistance >= maxDoorDistance) { 
+    doorIsClosed = true; 
+  }
+  else if (curDistance <= maxDoorDistance || curDistance <= baseDistance) {
+    doorIsClosed = false;
+  }
 }
 
 //Set appointment length variable
@@ -143,5 +148,8 @@ void setTempAndHumid(DHTSample sample) {
 	if (sample.isSuccess()) {
 		tempC = sample.getTempC();
 		humidity = sample.getHumidity();
+	}
+  else {
+		sample.getSampleResult();
 	}
 }

@@ -27,8 +27,10 @@ function updateTemperature() {
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
             if (resp.result != null) {
-                const toDisplay = resp.result.toFixed(displayDecimalPlaces);
-                document.getElementById("display-temperature").innerHTML = toDisplay + "&deg; C";
+                const temperatureCToDisplay = resp.result.toFixed(displayDecimalPlaces);
+                const temperatureFToDisplay = temperatureCToF(resp.result).toFixed(displayDecimalPlaces);
+                document.getElementById("display-temperature-c").innerHTML = temperatureCToDisplay + "&deg; C";
+                document.getElementById("display-temperature-f").innerHTML = temperatureFToDisplay + "&deg; F";
             }
             
         }
@@ -56,10 +58,10 @@ function updateCurrentBathroomAppointment() {
                 displayCurrentAppointmentParagraph.innerHTML = "No one is scheduled to use the bathroom right now."
             } else {
                 const resp = JSON.parse(this.responseText);
-
+                const startDateTime = new Date(resp.startDateTime);
                 displayCurrentAppointmentParagraph.innerHTML = 
                     resp.personName + " is scheduled to use the bathroom starting at " +
-                    resp.startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
+                    startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
             }
         }
     });
@@ -74,10 +76,10 @@ function updateNextBathroomAppointment() {
                 displayNextAppointmentParagraph.innerHTML = "There are no upcoming appointments."
             } else {
                 const resp = JSON.parse(this.responseText);
-
+                const startDateTime = new Date(resp.startDateTime);
                 displayNextAppointmentParagraph.innerHTML = 
                     resp.personName + " is scheduled to use the bathroom starting at " +
-                    resp.startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
+                    startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
             }
         }
     });
