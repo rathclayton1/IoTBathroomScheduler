@@ -27,8 +27,10 @@ function updateTemperature() {
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
             if (resp.result != null) {
-                const toDisplay = resp.result.toFixed(displayDecimalPlaces);
-                document.getElementById("display-temperature").innerHTML = toDisplay + "&deg; C";
+                const temperatureCToDisplay = resp.result.toFixed(displayDecimalPlaces);
+                const temperatureFToDisplay = temperatureCToF(resp.result).toFixed(displayDecimalPlaces);
+                document.getElementById("display-temperature-c").innerHTML = temperatureCToDisplay + "&deg; C";
+                document.getElementById("display-temperature-f").innerHTML = temperatureFToDisplay + "&deg; F";
             }
             
         }

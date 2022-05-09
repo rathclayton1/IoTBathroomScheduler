@@ -21,3 +21,7 @@ function setImmediateInterval(callback, milliseconds) {
     callback();
     setInterval(callback, milliseconds);
 }
+
+function temperatureCToF(temperatureC) {
+    return temperatureC * 1.8 + 32;
+}
