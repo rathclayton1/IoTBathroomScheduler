@@ -1,7 +1,8 @@
 /****
 Name: IoTBathroomScheduler - WebServer
 Author: Dylan Schulz, Clayton Rath, Sean Stille, Justin Vang
-Description: 
+Description: Keeps track of bathroom appointments and allows
+  this information to be queried in various ways.
 Bugs: 
 Reflection: 
 ****/
@@ -42,9 +43,12 @@ async function getAppointmentsByDate(date) {
 
   // Filter the list to only appointments starting on the given date
   const appointments = allAppointments.filter(
-    entity => entity.startDateTime.getUTCFullYear() == date.getUTCFullYear() &&
-              entity.startDateTime.getUTCMonth() == date.getUTCMonth() &&
-              entity.startDateTime.getUTCDay() == date.getUTCDay()
+    function (entity) {
+      const startDateTime = new Date(entity.startDateTime);
+      return startDateTime.getUTCFullYear() == date.getUTCFullYear() &&
+             startDateTime.getUTCMonth() == date.getUTCMonth() &&
+             startDateTime.getUTCDay() == date.getUTCDay();
+    }
   );
 
   return appointments;
@@ -59,8 +63,8 @@ async function getCurrentAppointment() {
   // and the end is after now
 
   const appointment = allAppointments.find(
-    entity => {
-      const startDateTime = entity.startDateTime;
+    function (entity) {
+      const startDateTime = new Date(entity.startDateTime);
       // Get end time by adding the number of minutes converted to milliseconds
       const endDateTime = new Date(startDateTime.getTime() + entity.numMinutes * msPerMin);
       const now = new Date();
@@ -83,8 +87,8 @@ async function getNextAppointment() {
   // Find the first appointment for which the start is after now
 
   const appointment = allAppointments.find(
-    entity => {
-      const startDateTime = entity.startDateTime;
+    function (entity) {
+      const startDateTime = new Date(entity.startDateTime);
       const now = new Date();
       // Compare using epoch time
       return now.getTime() < startDateTime.getTime();
@@ -105,7 +109,7 @@ async function isThereAConflictingAppointment(newStartDateTime, newNumMinutes) {
   
   const msPerMin = 60000;
   // Get end time by adding the number of minutes converted to milliseconds
-  const newEndDateTime = new Date(startDateTime.getTime() + numMinutes * msPerMin);
+  const newEndDateTime = new Date(newStartDateTime.getTime() + newNumMinutes * msPerMin);
 
   // Check if there is an existing appointment for which one of the following is true,
   // and if so, returns true indicating there is a conflicting appointment, else return false:
@@ -114,10 +118,10 @@ async function isThereAConflictingAppointment(newStartDateTime, newNumMinutes) {
   // (newStart is before existingStart) AND (newEnd is after existingEnd)
 
   return allAppointments.some(
-    entity => {
-      const existingStartDateTime = entity.startDateTime;
+    function (entity) {
+      const existingStartDateTime = new Date(entity.startDateTime);
       // Get end time by adding the number of minutes converted to milliseconds
-      const existingEndDateTime = new Date(startDateTime.getTime() + entity.numMinutes * msPerMin);
+      const existingEndDateTime = new Date(existingStartDateTime.getTime() + entity.numMinutes * msPerMin);
       // Compare using epoch time
       return (existingStartDateTime.getTime() <= newStartDateTime.getTime() && newStartDateTime.getTime() < existingEndDateTime.getTime()) ||
              (existingStartDateTime.getTime() < newEndDateTime.getTime() && newEndDateTime.getTime() <= existingEndDateTime.getTime()) ||
@@ -130,7 +134,7 @@ async function addAppointment(startDateTime, numMinutes, personName) {
   const entity = {
     key: datastore.key('appointment'),
     data: {
-      startDateTime: new Date(startDateTime),
+      startDateTime: startDateTime,
       numMinutes: numMinutes,
       personName: personName,
     },
@@ -142,7 +146,7 @@ async function addAppointment(startDateTime, numMinutes, personName) {
 ////// HTTP request handling //////
 
 // For the purposes of these endpoints, an appointment is an object with
-// startDateTime as an RFC 3339 string,
+// startDateTime as an ISO 8601 string,
 // numMinutes as an integer, representing the length, and
 // personName as a string, representing the person who has the appointment
 // An appointment may not cross from one day to another
@@ -160,11 +164,13 @@ app.get('/appointments', async (req, res) => {
 });
 
 // Takes in a JSON object that contains date,
-// representing the desired date as an RFC 3339 string
+// representing the desired date as an ISO 8601 string
 // Returns a JSON array of all appointments on a given date
 app.get('/appointments/by-date', async (req, res) => {
   try {
-    const appointments = getAppointmentsByDate(req.query.date);
+    const date = new Date(req.query.date);
+    
+    const appointments = await getAppointmentsByDate(date);
     res.status(200).json(appointments).end();
     
   } catch(err) {
@@ -177,7 +183,7 @@ app.get('/appointments/by-date', async (req, res) => {
 // null if there is no current appointment
 app.get('/appointments/current', async (req, res) => {
   try {
-    const appointment = getCurrentAppointment();
+    const appointment = await getCurrentAppointment();
     if (appointment === null) {
       res.status(200).end();
     } else {
@@ -195,11 +201,11 @@ app.get('/appointments/current', async (req, res) => {
 // null if there are no upcoming appointments
 app.get('/appointments/next', async (req, res) => {
   try {
-    const appointment = getNextAppointment();
+    const appointment = await getNextAppointment();
     if (appointment === null) {
       res.status(200).end();
     } else {
-      res.status(200).json(appointment).end();
+      res.status(200).send(appointment).end();
     }
 
   } catch(err) {
@@ -213,12 +219,12 @@ app.get('/appointments/next', async (req, res) => {
 // an error code is returned
 app.post('/appointments', async (req, res) => {
   try {
-    const data = JSON.parse(req.body.data);
+    const startDateTime = new Date(req.body.startDateTime);
 
-    if (await isThereAConflictingAppointment(data.startDateTime, data.numMinutes)) {
+    if (await isThereAConflictingAppointment(startDateTime, req.body.numMinutes)) {
       res.status(400).end();
     } else {
-      await addAppointment(data.startDateTime, data.numMinutes, data.personName);
+      await addAppointment(startDateTime, req.body.numMinutes, req.body.personName);
       res.status(200).end();
     }
 

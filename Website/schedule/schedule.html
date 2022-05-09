@@ -38,6 +38,8 @@
 
             <section>
                 <h3>Schedule New Appointment</h3>
+
+                <p id="new-appointment-result">Please enter the necessary information.</p>
                 
                 <ul id="new-appointment-list">
                     <li>
@@ -45,12 +47,8 @@
                         <input type="text" name="appointmentPersonName" id="appointmentPersonName">
                     </li>
                     <li>
-                        <label for="appointmentStartDate">Appointment date:</label>
-                        <input type="date" name="appointmentStartDate" id="appointmentStartDate">
-                    </li>
-                    <li>
-                        <label for="appointmentStartTime">Appointment start time:</label>
-                        <input type="time" name="appointmentStartTime" id="appointmentStartTime">
+                        <label for="appointmentStartDateTime">Appointment date and time:</label>
+                        <input type="datetime-local" name="appointmentStartDateTime" id="appointmentStartDateTime">
                     </li>
                     <li>
                         <label for="appointmentNumMinutes">Length in minutes:</label>
@@ -76,7 +74,7 @@
                 <h3>Current Schedule</h3>
                 <p class="fine-print">Schedule updated every one minute</p>
 
-                <p id="temp">Temp</p>
+                <ul id="current-schedule-list"></ul>
             </section>
         </main>
 
