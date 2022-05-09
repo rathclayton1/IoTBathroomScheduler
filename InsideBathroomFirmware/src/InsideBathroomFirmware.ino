@@ -22,6 +22,7 @@ int appointmentLength = defaultMinutes;
 bool lightIsOn = false;
 bool doorIsClosed = false;
 bool bathroomInUse = false;
+bool excessiveHotWaterUsage = false;
 
 const int trigPin = D4;
 const int echoPin = D5;
@@ -35,7 +36,9 @@ const int freq = 128;
 const int hz = 440;
 const int defaultStartTime = 1800000000;
 const int defaultMinutes = 0;
+const int baseDistance = 0;
 const double maxDoorDistance = 38.5; //Farthest distance the door can open in relation to distance sensor
+const double highHumidity = 91.5;
 
 HC_SR04 rangefinder = HC_SR04(trigPin, echoPin, 1.0, 500.0);
 DHT22Gen3 dht(A2, A4);
@@ -48,6 +51,7 @@ void setup() {
   Particle.variable("bathroomInUse", bathroomInUse);
   Particle.variable("temperatureC", tempC);
   Particle.variable("humidity", humidity);
+  Particle.variable("excessiveHotWaterUsage", excessiveHotWaterUsage);
   Particle.subscribe("hook-response/currentMinutes", setAppointmentLength, MY_DEVICES);
   Particle.subscribe("hook-response/currentStartTime", setAppointmentStartTime, MY_DEVICES);
   Serial.begin(9600);
@@ -57,7 +61,7 @@ void loop() {
   
   //Monitor for light and door status
   checkLightOn(); 
-  checkDoorClosed();
+  checkDoorClosed(rangefinder.getDistanceInch());
   (lightIsOn && doorIsClosed) ? bathroomInUse = true : bathroomInUse = false;
 
   //Get DHT sample
@@ -72,7 +76,11 @@ void loop() {
     Serial.println("Webhooks triggered");
   }
   webhookCounter--;
-  isTimeUp();
+  isTimeUp(); //check if appointment expired
+
+  //Check if too much hot water is being used, sound buzzer if so
+  overHotWaterUsage();
+  excessiveHotWaterUsage ? analogWrite(buzzer, freq, hz) : analogWrite(buzzer, freq * 0, hz);
 }
 
 /*
@@ -95,9 +103,8 @@ void checkLightOn() {
 }
 
 //If HC_SR04 detects the door within maxDoorDistance, it considers it open, otherwise considers it not open
-void checkDoorClosed() {
-  if (rangefinder.getDistanceInch() <= maxDoorDistance) doorIsClosed = false;
-  else doorIsClosed = true;
+void checkDoorClosed(double curDistance) {
+  (curDistance >= maxDoorDistance || curDistance <= baseDistance) ? doorIsClosed = false : doorIsClosed = true;
 }
 
 //Set appointment length variable
@@ -123,6 +130,11 @@ void isTimeUp() {
     appointmentStartTime = defaultStartTime;
     appointmentLength = defaultMinutes;
   }
+}
+
+//Check if humidity is high, aka someone is using too much hot water.
+void overHotWaterUsage() {
+  humidity > highHumidity ? excessiveHotWaterUsage = true : excessiveHotWaterUsage = false;
 }
 
 //Update the temperature and humidity cloud variables
