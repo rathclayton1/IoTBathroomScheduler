@@ -129,7 +129,7 @@ async function isThereAConflictingAppointment(newStartDateTime, newNumMinutes) {
       // Compare using epoch time
       return (existingStartDateTime.getTime() <= newStartDateTime.getTime() && newStartDateTime.getTime() < existingEndDateTime.getTime()) ||
              (existingStartDateTime.getTime() < newEndDateTime.getTime() && newEndDateTime.getTime() <= existingEndDateTime.getTime()) ||
-             (newStartDateTime.getTime() <= existingStartDateTime.getTime() && existingEndDateTime.getTime() <= existingEndDateTime.getTime());
+             (newStartDateTime.getTime() <= existingStartDateTime.getTime() && existingEndDateTime.getTime() <= newEndDateTime.getTime());
     }
   );
 }

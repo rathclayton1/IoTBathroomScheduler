@@ -43,18 +43,25 @@ function updateScheduleDisplay() {
         if (this.readyState == 4 && this.status == 200) {
             const resp = JSON.parse(this.responseText);
             const scheduleList = document.getElementById("current-schedule-list");
+            const scheduleResultParagraph = document.getElementById("current-schedule-result");
 
             // Clear previous list items
             scheduleList.innerHTML = "";
 
-            // Add a list item for each appointment
-            for (let i = 0; i < resp.length; i++) {
-                const appointmentListItem = document.createElement("li");
-                appointmentListItem.innerHTML = 
-                    resp[i].personName + " is scheduled to use the bathroom starting at " +
-                    resp[i].startDateTime + " for " + resp[i].numMinutes + " minutes.";
-                scheduleList.appendChild(appointmentListItem);
+            if (resp.length == 0) {
+                scheduleResultParagraph.innerHTML = "There are no appointments on this date.";
+            } else {
+                scheduleResultParagraph. innerHTML = "";
+                // Add a list item for each appointment
+                for (let i = 0; i < resp.length; i++) {
+                    const appointmentListItem = document.createElement("li");
+                    appointmentListItem.innerHTML = 
+                        resp[i].personName + " is scheduled to use the bathroom starting at " +
+                        resp[i].startDateTime + " for " + resp[i].numMinutes + " minutes.";
+                    scheduleList.appendChild(appointmentListItem);
+                }
             }
+            
         }
     });
 }
