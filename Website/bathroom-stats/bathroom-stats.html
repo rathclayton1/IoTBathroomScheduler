@@ -16,7 +16,8 @@
     <link rel="stylesheet" href="../universal-style.css">
     <link rel="stylesheet" href="bathroom-stats-style.css">
     <script src="../environment.js"></script>
-    <script src="bathroom-stats-script.js"></script>
+    <script src="../utils.js"></script>
+    <script src="bathroom-stats-script.js" defer></script>
 </head>
 
 <body>
@@ -33,7 +34,24 @@
 
         <main>
             <h2>Bathroom Stats</h2>
-            <p>Temp</p>
+            
+            <p>You can view some stats and information about your bathroom below.</p>
+            <p class="fine-print">Statistics updated every one minute</p>
+
+            <h3>In Use Status</h3>
+            <p id="display-in-use">Please wait...</p>
+
+            <h3>Temperature</h3>
+            <p id="display-temperature">Please wait...</p>
+
+            <h3>Humidity</h3>
+            <p id="display-humidity">Please wait...</p>
+
+            <h3>Current Bathroom Appointment</h3>
+            <p id="display-current-appointment">Please wait...</p>
+
+            <h3>Next Upcoming Bathroom Appointment</h3>
+            <p id="display-next-appointment">Please wait...</p>
         </main>
 
         <footer>

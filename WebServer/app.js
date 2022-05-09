@@ -12,10 +12,12 @@ Reflection:
 
 const express = require('express');
 let bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
+app.use(cors());
 
 const {Datastore} = require('@google-cloud/datastore');
 
@@ -162,8 +164,7 @@ app.get('/appointments', async (req, res) => {
 // Returns a JSON array of all appointments on a given date
 app.get('/appointments/by-date', async (req, res) => {
   try {
-    const queryData = JSON.parse(req.body.data);
-    const appointments = getAppointmentsByDate(queryData.date);
+    const appointments = getAppointmentsByDate(req.query.date);
     res.status(200).json(appointments).end();
     
   } catch(err) {
@@ -177,8 +178,12 @@ app.get('/appointments/by-date', async (req, res) => {
 app.get('/appointments/current', async (req, res) => {
   try {
     const appointment = getCurrentAppointment();
-    res.status(200).json(appointment).end();
-
+    if (appointment === null) {
+      res.status(200).end();
+    } else {
+      res.status(200).json(appointment).end();
+    }
+    
   } catch(err) {
     console.error(`Error: ${err}`);
     res.status(500).end();
@@ -191,7 +196,11 @@ app.get('/appointments/current', async (req, res) => {
 app.get('/appointments/next', async (req, res) => {
   try {
     const appointment = getNextAppointment();
-    res.status(200).json(appointment).end();
+    if (appointment === null) {
+      res.status(200).end();
+    } else {
+      res.status(200).json(appointment).end();
+    }
 
   } catch(err) {
     console.error(`Error: ${err}`);

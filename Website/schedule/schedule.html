@@ -16,7 +16,8 @@
     <link rel="stylesheet" href="../universal-style.css">
     <link rel="stylesheet" href="schedule-style.css">
     <script src="../environment.js"></script>
-    <script src="schedule-script.js"></script>
+    <script src="../utils.js"></script>
+    <script src="schedule-script.js" defer></script>
 </head>
 
 <body>
@@ -33,7 +34,49 @@
 
         <main>
             <h2>Schedule</h2>
-            <p>Temp</p>
+
+            <section>
+                <h3>Schedule New Appointment</h3>
+                
+                <ul id="new-appointment-list">
+                    <li>
+                        <label for="appointmentPersonName">Name:</label>
+                        <input type="text" name="appointmentPersonName" id="appointmentPersonName">
+                    </li>
+                    <li>
+                        <label for="appointmentStartDate">Appointment date:</label>
+                        <input type="date" name="appointmentStartDate" id="appointmentStartDate">
+                    </li>
+                    <li>
+                        <label for="appointmentStartTime">Appointment start time:</label>
+                        <input type="time" name="appointmentStartTime" id="appointmentStartTime">
+                    </li>
+                    <li>
+                        <label for="appointmentNumMinutes">Length in minutes:</label>
+                        <input type="number" name="appointmentNumMinutes" id="appointmentNumMinutes" min="1">
+                    </li>
+                </ul>
+        
+                <button onclick="scheduleNewAppointment()">Schedule</button>
+            </section>
+
+            <section>
+                <h3>Select Date for Schedule View</h3>
+
+                <p>
+                    <label for="dateForDisplay">New date:</label>
+                    <input type="date" name="dateForDisplay" id="dateForDisplay">
+                </p>
+        
+                <button onclick="updateScheduleDisplay()">Update</button>
+            </section>
+
+            <section>
+                <h3>Current Schedule</h3>
+                <p class="fine-print">Schedule updated every one minute</p>
+
+                <p id="temp">Temp</p>
+            </section>
         </main>
 
         <footer>

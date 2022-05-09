@@ -2,7 +2,7 @@
 // other .js files that will need to reference these environment variables
 
 const environment = {
-    insideBathroomArgonDeviceId: "",
-    insideBathroomArgonAccessToken: "",
+    insideBathroomArgonDeviceId: "morphing_gerbil",
+    insideBathroomArgonAccessToken: "aeff3d44397d1c17328a9136110205ed4ce02c65",
     webServerUrl: "https://iotbathroomscheduler.uc.r.appspot.com",
 }
