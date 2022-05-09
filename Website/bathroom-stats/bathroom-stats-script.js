@@ -58,10 +58,10 @@ function updateCurrentBathroomAppointment() {
                 displayCurrentAppointmentParagraph.innerHTML = "No one is scheduled to use the bathroom right now."
             } else {
                 const resp = JSON.parse(this.responseText);
-
+                const startDateTime = new Date(resp.startDateTime);
                 displayCurrentAppointmentParagraph.innerHTML = 
                     resp.personName + " is scheduled to use the bathroom starting at " +
-                    resp.startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
+                    startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
             }
         }
     });
@@ -76,10 +76,10 @@ function updateNextBathroomAppointment() {
                 displayNextAppointmentParagraph.innerHTML = "There are no upcoming appointments."
             } else {
                 const resp = JSON.parse(this.responseText);
-
+                const startDateTime = new Date(resp.startDateTime);
                 displayNextAppointmentParagraph.innerHTML = 
                     resp.personName + " is scheduled to use the bathroom starting at " +
-                    resp.startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
+                    startDateTime.toLocaleTimeString() + " for " + resp.numMinutes + " minute(s).";
             }
         }
     });
